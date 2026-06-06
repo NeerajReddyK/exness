@@ -1,5 +1,5 @@
 import express, { Router } from "express";
-import { signUpSchema, singInSchema } from "../schema/auth.js";
+import { signUpSchema, singInSchema } from "../schema/authSchema.js";
 import { USERS } from "../store/user.js";
 
 const router: Router = express.Router();

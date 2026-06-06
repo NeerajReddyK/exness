@@ -8,3 +8,5 @@ export const USERS: Record<
     assets: Record<string, number>;
   }
 > = {};
+
+export const PRICESTORE: Record<string, { bid: number; ask: number }> = {};
