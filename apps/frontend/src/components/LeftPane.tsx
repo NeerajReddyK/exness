@@ -5,12 +5,16 @@ import { Asset } from "./Asset";
 
 const beUrl = import.meta.env.VITE_BEURL || "http://localhost:3000";
 export const LeftPane = () => {
-  const [assets, setAssets] = useState([]);
+  const [assets, setAssets] = useState<
+    [{ name: string; symbol: string; buyPrice: number; sellPrice: number }]
+  >([{ name: "SOLANA", symbol: "SOL", buyPrice: 0, sellPrice: 0 }]);
   useEffect(() => {
     const fetchData = async () => {
       const response = await fetch(`${beUrl}/assets`);
       const result = await response.json();
-      setAssets(result.assets);
+      if (result.assets) {
+        setAssets(result.assets);
+      }
       return;
     };
     fetchData();

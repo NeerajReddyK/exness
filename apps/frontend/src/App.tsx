@@ -1,12 +1,12 @@
 import { Route, Routes } from "react-router";
 import "./App.css";
-import { ChartPage } from "./pages/ChartPage";
+import { TradePage } from "./pages/TradePage";
 
 function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<ChartPage />} />
+        <Route path="/" element={<TradePage />} />
       </Routes>
     </>
   );

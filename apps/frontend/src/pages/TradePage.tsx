@@ -1,6 +1,7 @@
+import { Chart } from "../components/Chart";
 import { LeftPane } from "../components/LeftPane";
 
-export const ChartPage = () => {
+export const TradePage = () => {
   return (
     <div className="h-screen flex flex-col ">
       <div className="h-16 bg-componentBgColor">navbar</div>
@@ -12,7 +13,7 @@ export const ChartPage = () => {
 
         <div className="flex-1 flex flex-col gap-1 rounded-md ">
           <div className="flex-1 bg-componentBgColor rounded-sm">
-            top in middle
+            <Chart />
           </div>
           <div className="h-48 bg-componentBgColor rounded-sm">
             bottom in middle
