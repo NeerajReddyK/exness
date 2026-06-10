@@ -12,7 +12,7 @@ export const TradePage = () => {
         </div>
 
         <div className="flex-1 flex flex-col gap-1 rounded-md ">
-          <div className="flex-1 bg-componentBgColor rounded-sm">
+          <div className="flex-1 bg-componentBgColor rounded-lg">
             <Chart />
           </div>
           <div className="h-48 bg-componentBgColor rounded-sm">

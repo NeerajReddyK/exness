@@ -1,15 +1,23 @@
-import { createChart, CandlestickSeries } from "lightweight-charts";
 import { useEffect, useRef } from "react";
+import { CandlestickSeries, createChart } from "lightweight-charts";
 
 export const Chart = () => {
   const chartRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    // const chartOptions = { layout: { textColor: 'black', background: { type: 'solid', color: 'white' } } };
-    const chart = createChart(chartRef.current!, {
-      layout: { textColor: "white", background: { color: "black" } },
+    const element = chartRef.current;
+    if (!element) {
+      console.log("useRef not populated yet");
+      return;
+    }
+    const chart = createChart(element, {
+      layout: { background: { color: "black" }, textColor: "grey" },
+      grid: {
+        vertLines: { color: "#141d22" },
+        horzLines: { color: "#141d22" },
+      },
     });
-    const candlestick = chart.addSeries(CandlestickSeries);
-    candlestick.setData([
+    const candleStick = chart.addSeries(CandlestickSeries);
+    candleStick.setData([
       {
         time: "2018-12-22",
         open: 75.16,
@@ -63,13 +71,11 @@ export const Chart = () => {
         close: 111.26,
       },
     ]);
-
     chart.timeScale().fitContent();
-
     return () => chart.remove();
   }, []);
   return (
-    <div className="rounded-sm overflow-hidden">
+    <div className="rounded-lg overflow-hidden w-full h-full">
       <div ref={chartRef} className="w-full h-full"></div>
     </div>
   );
