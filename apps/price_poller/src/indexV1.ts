@@ -1,5 +1,6 @@
 import WebSocket from "ws";
 import "dotenv/config";
+import { redisClient } from "./redisClient.js";
 
 const BACKPACK_WS = process.env.BACKPACK_WS_API;
 if (!BACKPACK_WS) {
@@ -20,10 +21,22 @@ ws.on("open", () => {
   console.log(JSON.stringify(subscribe));
 
   ws.send(JSON.stringify(subscribe));
+  let SOL_ask = 0;
+  let SOL_bid = 0;
+  redisClient.connect();
 
   ws.on("message", (message) => {
     console.log("message received: ", message.toString());
+    const obj = JSON.parse(message.toString());
+    SOL_ask = obj.a;
+    SOL_bid = obj.b;
   });
+
+  setInterval(() => {
+    const xadd = redisClient.xAdd("demo:demo", "*", {asset: "SOLUSDT", ask: `${SOL_ask}`, bid: `${SOL_bid}`});
+    console.log("xadd: ", xadd);
+  }, 100);
+
 });
 
 ws.on("close", (close) => {
