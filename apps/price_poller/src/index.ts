@@ -20,7 +20,7 @@ ws.on("open", async () => {
   console.log(JSON.stringify(subscribe));
 
   ws.send(JSON.stringify(subscribe));
-  let SOL_ask: number | null =  null;
+  let SOL_ask: number | null = null;
   let SOL_bid: number | null = null;
 
   ws.on("message", (message) => {
@@ -30,13 +30,17 @@ ws.on("open", async () => {
   });
 
   setInterval(async () => {
-    if(!SOL_ask || !SOL_bid) {
+    if (!SOL_ask || !SOL_bid) {
       return;
     }
-    const xadd = await redisClient.xAdd("stream1:poller", "*", {asset: "SOLUSDC", ask: `${SOL_ask}`, bid: `${SOL_bid}`});
+    const xadd = await redisClient.xAdd("stream1:poller", "*", {
+      type: "price-update",
+      asset: "SOLUSDC",
+      ask: `${SOL_ask}`,
+      bid: `${SOL_bid}`,
+    });
     console.log("xadd: ", xadd);
   }, 100);
-
 });
 
 ws.on("close", async (close) => {
