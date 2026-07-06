@@ -32,10 +32,16 @@ const cGroup = async () => {
     console.log("readgroup length: ", readGroup.length);
     for (const stream of readGroup) {
       for (const msg of stream.messages) {
-        if (msg.message.asset === "SOLUSDC") {
-          PRICESTORE["SOL"].ask = msg.message.ask;
-          PRICESTORE["SOL"].bid = msg.message.bid;
+        if (msg.message.type === "price-update") {
+          if (msg.message.asset === "SOLUSDC") {
+            PRICESTORE["SOL"].ask = msg.message.ask;
+            PRICESTORE["SOL"].bid = msg.message.bid;
+          }
+        } else if (msg.message.type === "trade-request") {
+          console.log("logging msg for trade-request: ", msg);
+          // working as expected. add logic here
         }
+
         await redisClient.xAck("stream1:poller", "stream1:cgroup", msg.id);
       }
     }
