@@ -1,8 +1,10 @@
 import express from "express";
 import { redisClient } from "./redisClient.js";
+import authRouter from "./auth.js";
 
 const app = express();
 app.use(express.json());
+app.use("/auth", authRouter);
 
 app.post("/trade/open", async (req, res) => {
   // send the request to stream1:poller
