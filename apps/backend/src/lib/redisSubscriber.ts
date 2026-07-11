@@ -23,20 +23,17 @@ export class RedisSubscriber {
         { BLOCK: 0, COUNT: 1 },
       );
       if (!xread) continue;
-      console.log("received xread stream2:backend: ", xread);
-      const { name, messages } = xread[0]!;
-      console.log("messages: ", messages);
-      const { id, message } = messages[0];
+      const { messages } = xread[0]!;
+      const { message } = messages[0];
 
-      console.log("calling resolve");
       this.callbacks[message.tradeId]!(message.updatedBalance);
+      delete this.callbacks[message.tradeId];
       return;
     }
   };
 
   waitForMessage = (callbackId: string) => {
     return new Promise((resolve, reject) => {
-      console.log("inside WaitForMessage before resolve and reject");
       this.callbacks[callbackId] = resolve;
       setTimeout(() => {
         if (this.callbacks[callbackId]) {

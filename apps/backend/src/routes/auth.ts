@@ -1,6 +1,6 @@
 import express, { Router } from "express";
-import { logInSchema, signInSchema } from "./types.js";
-import { prisma } from "./lib/prisma.js";
+import { logInSchema, signInSchema } from "../types.js";
+import { prisma } from "../lib/prisma.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
