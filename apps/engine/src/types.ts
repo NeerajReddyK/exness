@@ -1,9 +1,9 @@
 interface tradeMessage {
-  type: "trade-request";
+  type: "trade-buy" | "trade-sell";
   tradeId: string;
   userId: string;
   asset: "SOLUSDC" | "BTCUSD" | "ETHUSD";
-  bid: string;
+  quantity: string;
 }
 export interface tradeRequestTypes {
   id: string;
