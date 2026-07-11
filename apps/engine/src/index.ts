@@ -1,9 +1,11 @@
 // read from stream1:poller and update pricestore.
 
+import { tradeRequest } from "./handlers/tradeRequest.js";
 import { redisClient } from "./redisClient.js";
 import { PRICESTORE } from "./variables.js";
 
 const cGroup = async () => {
+  console.log("cGroup started");
   try {
     await redisClient.xGroupCreate("stream1:poller", "stream1:cgroup", "0", {
       MKSTREAM: true,
@@ -39,7 +41,11 @@ const cGroup = async () => {
           }
         } else if (msg.message.type === "trade-request") {
           console.log("logging msg for trade-request: ", msg);
-          // working as expected. add logic here
+          // adding logic. incomplete for now.
+          tradeRequest(msg);
+          console.log(
+            "in index.ts after completing tradeRequest and updating balances",
+          );
         }
 
         await redisClient.xAck("stream1:poller", "stream1:cgroup", msg.id);
