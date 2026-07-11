@@ -14,6 +14,5 @@ export const logInSchema = z.object({
 export const tradeSchema = z.object({
   token: z.string(),
   asset: z.string(),
-  bid: z.string(),
   quantity: z.string(),
 });

@@ -15,10 +15,12 @@ router.post("/trade/buy", async (req, res) => {
     if (!success) {
       return res.status(400).json({ message: "Invalid request body" });
     }
-    const { token, asset, bid, quantity } = req.body;
+    const { token, asset, quantity } = req.body;
     const jwt_check = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
     if (!jwt_check) {
-      return res.status(401).json({ message: "invalid token" });
+      return res
+        .status(401)
+        .json({ message: "Fail", reason: "invalid token", errorLog: null });
     }
     const userId = jwt_check.userId;
     const tradeId = uuidv4();
@@ -28,7 +30,6 @@ router.post("/trade/buy", async (req, res) => {
       userId,
       tradeId,
       asset,
-      bid,
       quantity,
     });
 
@@ -53,8 +54,37 @@ router.post("/trade/buy", async (req, res) => {
   }
 });
 
-router.post("/trade/sell", (req, res) => {
+router.post("/trade/sell", async (req, res) => {
   try {
+    const { success, error } = tradeSchema.safeParse(req.body);
+    if (!success) {
+      return res
+        .status(400)
+        .json({ message: "Fail", reason: "Invalid params", errorLog: error });
+    }
+    const { token, asset, quantity } = req.body;
+    // send the request to the engine and then wait for result
+    const jwt_check = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
+    if (!jwt_check) {
+      return res
+        .status(401)
+        .json({ message: "Fail", reason: "invalid token", errorLog: null });
+    }
+    const userId = jwt_check.userId;
+    const tradeId = uuidv4();
+    const xadd = redisClient.xAdd("stream1:poller", "*", {
+      type: "trade-buy",
+      userId,
+      tradeId,
+      asset,
+      quantity,
+    });
+    console.log("xadd", xadd);
+
+    // wait for response
+    const responseFromEngine = await redisSubscriber.waitForMessage(tradeId);
+    const returnResponse = JSON.parse(responseFromEngine as string);
+    return res.status(200).json({ message: "success", data: returnResponse });
   } catch (error) {
     console.error("error: ", error);
     return res.status(500).json({
