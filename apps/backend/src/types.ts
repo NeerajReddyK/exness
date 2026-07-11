@@ -10,3 +10,10 @@ export const logInSchema = z.object({
   email: z.email(),
   password: z.string(),
 });
+
+export const tradeSchema = z.object({
+  token: z.string(),
+  asset: z.string(),
+  bid: z.string(),
+  quantity: z.string(),
+});
