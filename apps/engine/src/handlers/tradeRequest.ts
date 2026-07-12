@@ -1,5 +1,5 @@
 import { redisClient } from "../redisClient.js";
-import type { tradeRequestTypes } from "../types.js";
+import { SYMBOL_MAP, type tradeRequestTypes } from "../types.js";
 import { BALANCES, PRICESTORE } from "../variables.js";
 
 export const buyRequest = async (msg: tradeRequestTypes) => {
@@ -16,31 +16,28 @@ export const buyRequest = async (msg: tradeRequestTypes) => {
         },
       };
     }
-    let assetType = "";
-    let assetPrice = 0;
-    if (asset === "SOLUSDC") {
-      assetType = "SOL";
-      assetPrice = PRICESTORE.SOL.ask;
-    } else if (asset === "BTCUSD") {
-      assetType = "BTC";
-      assetPrice = PRICESTORE.BTC.ask;
-    } else if (asset === "ETHUSD") {
-      assetType = "ETH";
-      assetPrice = PRICESTORE.ETH.ask;
-    }
 
-    if (BALANCES[userId].usd > assetPrice) {
+    const assetType = SYMBOL_MAP[asset];
+    const assetPrice = PRICESTORE[assetType].ask;
+
+    if (BALANCES[userId].usd >= assetPrice) {
       BALANCES[userId].usd -= assetPrice;
       BALANCES[userId].asset.SOL += parseInt(quantity);
     } else {
-      console.log("low balance");
+      await redisClient.xAdd("stream2:backend", "*", {
+        type: "trade-buy-response",
+        userId,
+        tradeId,
+        message: "Low Balance",
+      });
       return;
     }
     const updatedBalance = JSON.stringify(BALANCES[userId]);
     await redisClient.xAdd("stream2:backend", "*", {
-      type: "trade-response",
+      type: "trade-buy-response",
       tradeId,
       userId,
+      message: "Success",
       updatedBalance,
     });
   } catch (error) {
@@ -48,22 +45,48 @@ export const buyRequest = async (msg: tradeRequestTypes) => {
   }
 };
 
-export const sellRequest = (msg: tradeRequestTypes) => {
+export const sellRequest = async (msg: tradeRequestTypes) => {
   const { message } = msg;
   const { tradeId, userId, asset, quantity } = message;
   if (!BALANCES[userId]) {
-    // should start by handling this
+    // should return because user don't have any assets.
+    console.log("inside !BALANCES[userId]");
+    const xadd = await redisClient.xAdd("stream2:backend", "*", {
+      type: "trade-sell-response",
+      tradeId,
+      userId,
+      message: "No asset available",
+      updatedBalance: "0",
+    });
+    console.log("xadd: ", xadd);
+    return;
   }
+
+  const assetType = SYMBOL_MAP[asset];
+  const assetPrice = Number(PRICESTORE[assetType].ask);
+  if (!(BALANCES[userId].asset[assetType] >= parseInt(quantity))) {
+    const updatedBalance = JSON.stringify(BALANCES[userId]);
+    await redisClient.xAdd("stream2:backend", "*", {
+      type: "trade-sell-response",
+      userId,
+      tradeId,
+      message: "Fail",
+      updatedBalance,
+    });
+    return;
+  }
+  BALANCES[userId].usd += assetPrice;
+  BALANCES[userId].asset[assetType] -= parseInt(quantity);
+  const updatedBalance = JSON.stringify(BALANCES[userId]);
+
+  const xread = await redisClient.xAdd("stream2:backend", "*", {
+    type: "trade-sell-response",
+    userId,
+    tradeId,
+    message: "Success",
+    updatedBalance,
+  });
+  console.log("added to stream2:backend: ", xread);
+
+  return;
 };
-/*
-    msg: {
-      id: '1783332944195-0',
-        message: {
-            type: 'trade-request',
-            tradeId: '0.27897133104248284',
-            userId: '123',
-            asset: 'SOLUSDC',
-            bid: '220'
-        }
-      }
-    */

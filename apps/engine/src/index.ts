@@ -39,8 +39,11 @@ const cGroup = async () => {
             PRICESTORE["SOL"].bid = msg.message.bid;
           }
         } else if (msg.message.type === "trade-buy") {
+          console.log("insdie buyRequest, msg: ", msg);
           buyRequest(msg);
         } else if (msg.message.type === "trade-sell") {
+          console.log("inside trade-sell");
+          console.log("trade-type: trade-sell");
           sellRequest(msg);
         }
 
