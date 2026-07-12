@@ -16,3 +16,9 @@ export const tradeSchema = z.object({
   asset: z.string(),
   quantity: z.string(),
 });
+
+export const SYMBOL_MAP = {
+  SOLUSDC: "SOL",
+  ETHUSDC: "ETH",
+  BTCUSDC: "BTC",
+};

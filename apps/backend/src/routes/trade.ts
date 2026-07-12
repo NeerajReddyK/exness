@@ -9,13 +9,15 @@ const router: Router = express.Router();
 
 const redisSubscriber = new RedisSubscriber();
 
-router.post("/trade/buy", async (req, res) => {
+router.post("/buy", async (req, res) => {
   try {
     const { success } = tradeSchema.safeParse(req.body);
     if (!success) {
       return res.status(400).json({ message: "Invalid request body" });
     }
+    console.log("before reading req.body");
     const { token, asset, quantity } = req.body;
+    console.log("after reading req.body: ", token, asset, quantity);
     const jwt_check = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
     if (!jwt_check) {
       return res
@@ -23,25 +25,28 @@ router.post("/trade/buy", async (req, res) => {
         .json({ message: "Fail", reason: "invalid token", errorLog: null });
     }
     const userId = jwt_check.userId;
+    console.log("userId after parsing jwt: ", userId);
     const tradeId = uuidv4();
-    console.log("added to stream1:poller");
     const xadd = await redisClient.xAdd("stream1:poller", "*", {
-      type: "trade-request",
+      type: "trade-buy",
       userId,
       tradeId,
       asset,
       quantity,
     });
+    console.log("added to stream1:poller");
 
     // should check whether this try-catch is required.
     try {
+      console.log("started waiting for responseFromEngine");
       const responseFromEngine = await redisSubscriber.waitForMessage(tradeId);
-      console.log("response from engine: ", responseFromEngine);
+      console.log("responseFromEngine: ", responseFromEngine);
       return res.status(200).json({
         message: "request complete",
         usd: responseFromEngine,
       });
     } catch (error) {
+      console.log("error waiting from engine: ", error);
       return res.status(400).json({ message: "waitForMessage error", error });
     }
   } catch (error) {
@@ -54,7 +59,7 @@ router.post("/trade/buy", async (req, res) => {
   }
 });
 
-router.post("/trade/sell", async (req, res) => {
+router.post("/sell", async (req, res) => {
   try {
     const { success, error } = tradeSchema.safeParse(req.body);
     if (!success) {
@@ -72,8 +77,8 @@ router.post("/trade/sell", async (req, res) => {
     }
     const userId = jwt_check.userId;
     const tradeId = uuidv4();
-    const xadd = redisClient.xAdd("stream1:poller", "*", {
-      type: "trade-buy",
+    const xadd = await redisClient.xAdd("stream1:poller", "*", {
+      type: "trade-sell",
       userId,
       tradeId,
       asset,
@@ -82,7 +87,9 @@ router.post("/trade/sell", async (req, res) => {
     console.log("xadd", xadd);
 
     // wait for response
+    console.log("entering into responseFromEngine");
     const responseFromEngine = await redisSubscriber.waitForMessage(tradeId);
+    console.log("responseFromEngine: ", responseFromEngine);
     const returnResponse = JSON.parse(responseFromEngine as string);
     return res.status(200).json({ message: "success", data: returnResponse });
   } catch (error) {
