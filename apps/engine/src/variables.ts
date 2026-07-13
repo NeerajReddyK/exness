@@ -1,4 +1,4 @@
-type asset = "SOL" | "BTC" | "ETH";
+type asset = "SOL_USDC" | "BTC_USDC" | "ETH_USDC";
 
 interface assetValues {
   bid: number;
@@ -6,9 +6,9 @@ interface assetValues {
 }
 
 export const PRICESTORE: Record<asset, assetValues> = {
-  SOL: { bid: 0, ask: 0 },
-  BTC: { bid: 0, ask: 0 },
-  ETH: { bid: 0, ask: 0 },
+  SOL_USDC: { bid: 0, ask: 0 },
+  BTC_USDC: { bid: 0, ask: 0 },
+  ETH_USDC: { bid: 0, ask: 0 },
 };
 
 interface balanceType {

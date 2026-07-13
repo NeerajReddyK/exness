@@ -15,9 +15,7 @@ router.post("/buy", async (req, res) => {
     if (!success) {
       return res.status(400).json({ message: "Invalid request body" });
     }
-    console.log("before reading req.body");
     const { token, asset, quantity } = req.body;
-    console.log("after reading req.body: ", token, asset, quantity);
     const jwt_check = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
     if (!jwt_check) {
       return res
@@ -25,7 +23,6 @@ router.post("/buy", async (req, res) => {
         .json({ message: "Fail", reason: "invalid token", errorLog: null });
     }
     const userId = jwt_check.userId;
-    console.log("userId after parsing jwt: ", userId);
     const tradeId = uuidv4();
     const xadd = await redisClient.xAdd("stream1:poller", "*", {
       type: "trade-buy",
@@ -34,7 +31,7 @@ router.post("/buy", async (req, res) => {
       asset,
       quantity,
     });
-    console.log("added to stream1:poller");
+    console.log("added to stream1:poller", xadd);
 
     // should check whether this try-catch is required.
     try {

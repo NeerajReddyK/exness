@@ -2,7 +2,7 @@ interface tradeMessage {
   type: "trade-buy" | "trade-sell";
   tradeId: string;
   userId: string;
-  asset: "SOLUSDC" | "BTCUSDC" | "ETHUSDC";
+  asset: "SOL_USDC" | "BTC_USDC" | "ETH_USDC";
   quantity: string;
 }
 export interface tradeRequestTypes {
@@ -12,7 +12,7 @@ export interface tradeRequestTypes {
 
 interface priceUpdate {
   type: "price-update";
-  asset: "SOLUSDC" | "BTCUSDC" | "ETHUSDC";
+  asset: "SOL_USDC" | "BTC_USDC" | "ETH_USDC";
   bid: string;
   ask: string;
 }
@@ -22,7 +22,7 @@ export interface priceUpdateTypes {
 }
 
 export const SYMBOL_MAP = {
-  SOLUSDC: "SOL",
-  ETHUSDC: "ETH",
-  BTCUSDC: "BTC",
+  SOL_USDC: "SOL",
+  BTC_USDC: "BTC",
+  ETH_USDC: "ETH",
 } as const;

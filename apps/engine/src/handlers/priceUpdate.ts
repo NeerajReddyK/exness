@@ -2,14 +2,14 @@ import type { priceUpdateTypes } from "../types.js";
 import { PRICESTORE } from "../variables.js";
 
 export const priceUpdate = (msg: priceUpdateTypes) => {
-  if (msg.message.asset === "SOLUSDC") {
-    PRICESTORE["SOL"].ask = Number(msg.message.ask);
-    PRICESTORE["SOL"].bid = Number(msg.message.bid);
-  } else if (msg.message.asset === "BTCUSDC") {
-    PRICESTORE["BTC"].ask = Number(msg.message.ask);
-    PRICESTORE["BTC"].bid = Number(msg.message.bid);
-  } else if (msg.message.asset === "ETHUSDC") {
-    PRICESTORE["ETH"].ask = Number(msg.message.ask);
-    PRICESTORE["ETH"].bid = Number(msg.message.bid);
+  if (msg.message.asset === "SOL_USDC") {
+    PRICESTORE["SOL_USDC"].ask = Number(msg.message.ask);
+    PRICESTORE["SOL_USDC"].bid = Number(msg.message.bid);
+  } else if (msg.message.asset === "BTC_USDC") {
+    PRICESTORE["BTC_USDC"].ask = Number(msg.message.ask);
+    PRICESTORE["BTC_USDC"].bid = Number(msg.message.bid);
+  } else if (msg.message.asset === "ETH_USDC") {
+    PRICESTORE["ETH_USDC"].ask = Number(msg.message.ask);
+    PRICESTORE["ETH_USDC"].bid = Number(msg.message.bid);
   }
 };

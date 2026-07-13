@@ -54,7 +54,7 @@ ws.on("open", async () => {
     if (SOL_ask && SOL_bid) {
       await redisClient.xAdd("stream1:poller", "*", {
         type: "price-update",
-        asset: "SOLUSDC",
+        asset: "SOL_USDC",
         ask: `${SOL_ask}`,
         bid: `${SOL_bid}`,
       });
@@ -63,7 +63,7 @@ ws.on("open", async () => {
     if (BTC_ask && BTC_bid) {
       await redisClient.xAdd("stream1:poller", "*", {
         type: "price-update",
-        asset: "BTCUSDC",
+        asset: "BTC_USDC",
         ask: `${BTC_ask}`,
         bid: `${BTC_bid}`,
       });
@@ -72,7 +72,7 @@ ws.on("open", async () => {
     if (ETH_ask && ETH_bid) {
       await redisClient.xAdd("stream1:poller", "*", {
         type: "price-update",
-        asset: "ETHUSDC",
+        asset: "ETH_USDC",
         ask: `${ETH_ask}`,
         bid: `${ETH_bid}`,
       });

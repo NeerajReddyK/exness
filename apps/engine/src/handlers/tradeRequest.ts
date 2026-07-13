@@ -10,25 +10,26 @@ export const buyRequest = async (msg: tradeRequestTypes) => {
       BALANCES[userId] = {
         usd: 5000,
         asset: {
-          SOL: 0,
-          BTC: 0,
-          ETH: 0,
+          SOL_USDC: 0,
+          BTC_USDC: 0,
+          ETH_USDC: 0,
         },
       };
     }
 
-    const assetType = SYMBOL_MAP[asset];
-    const assetPrice = PRICESTORE[assetType].ask;
+    const assetPrice = PRICESTORE[asset].ask;
 
     if (BALANCES[userId].usd >= assetPrice) {
       BALANCES[userId].usd -= assetPrice;
-      BALANCES[userId].asset.SOL += parseInt(quantity);
+      BALANCES[userId].asset[asset] += parseInt(quantity);
     } else {
+      const updatedBalance = JSON.stringify(BALANCES[userId]);
       await redisClient.xAdd("stream2:backend", "*", {
         type: "trade-buy-response",
         userId,
         tradeId,
         message: "Low Balance",
+        updatedBalance,
       });
       return;
     }
@@ -62,9 +63,8 @@ export const sellRequest = async (msg: tradeRequestTypes) => {
     return;
   }
 
-  const assetType = SYMBOL_MAP[asset];
-  const assetPrice = Number(PRICESTORE[assetType].ask);
-  if (!(BALANCES[userId].asset[assetType] >= parseInt(quantity))) {
+  const assetPrice = Number(PRICESTORE[asset].ask);
+  if (!(BALANCES[userId].asset[asset] >= parseInt(quantity))) {
     const updatedBalance = JSON.stringify(BALANCES[userId]);
     await redisClient.xAdd("stream2:backend", "*", {
       type: "trade-sell-response",
@@ -76,7 +76,7 @@ export const sellRequest = async (msg: tradeRequestTypes) => {
     return;
   }
   BALANCES[userId].usd += assetPrice;
-  BALANCES[userId].asset[assetType] -= parseInt(quantity);
+  BALANCES[userId].asset[asset] -= parseInt(quantity);
   const updatedBalance = JSON.stringify(BALANCES[userId]);
 
   const xread = await redisClient.xAdd("stream2:backend", "*", {

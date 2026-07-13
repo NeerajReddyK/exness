@@ -13,12 +13,6 @@ export const logInSchema = z.object({
 
 export const tradeSchema = z.object({
   token: z.string(),
-  asset: z.string(),
+  asset: z.enum(["SOL_USDC", "BTC_USDC", "ETH_USDC"]),
   quantity: z.string(),
 });
-
-export const SYMBOL_MAP = {
-  SOLUSDC: "SOL",
-  ETHUSDC: "ETH",
-  BTCUSDC: "BTC",
-};
