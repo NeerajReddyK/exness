@@ -15,7 +15,11 @@ ws.on("open", async () => {
   const subscribe = {
     id: 1,
     method: "SUBSCRIBE",
-    params: ["bookTicker.SOL_USDC"],
+    params: [
+      "bookTicker.SOL_USDC",
+      "bookTicker.BTC_USDC",
+      "bookTicker.ETH_USDC",
+    ],
   };
   console.log(JSON.stringify(subscribe));
 
@@ -23,23 +27,56 @@ ws.on("open", async () => {
   let SOL_ask: number | null = null;
   let SOL_bid: number | null = null;
 
+  let BTC_ask: number | null = null;
+  let BTC_bid: number | null = null;
+
+  let ETH_ask: number | null = null;
+  let ETH_bid: number | null = null;
+
   ws.on("message", (message) => {
     const obj = JSON.parse(message.toString());
-    SOL_ask = obj.data.a;
-    SOL_bid = obj.data.b;
+    if (obj.data.s === "SOL_USDC") {
+      SOL_ask = obj.data.a;
+      SOL_bid = obj.data.b;
+    } else if (obj.data.s === "BTC_USDC") {
+      BTC_ask = obj.data.a;
+      BTC_bid = obj.data.b;
+    } else if (obj.data.s === "ETH_USDC") {
+      ETH_ask = obj.data.a;
+      ETH_bid = obj.data.b;
+    }
   });
 
   setInterval(async () => {
     if (!SOL_ask || !SOL_bid) {
       return;
     }
-    const xadd = await redisClient.xAdd("stream1:poller", "*", {
-      type: "price-update",
-      asset: "SOLUSDC",
-      ask: `${SOL_ask}`,
-      bid: `${SOL_bid}`,
-    });
-    console.log("xadd: ", xadd);
+    if (SOL_ask && SOL_bid) {
+      await redisClient.xAdd("stream1:poller", "*", {
+        type: "price-update",
+        asset: "SOLUSDC",
+        ask: `${SOL_ask}`,
+        bid: `${SOL_bid}`,
+      });
+    }
+
+    if (BTC_ask && BTC_bid) {
+      await redisClient.xAdd("stream1:poller", "*", {
+        type: "price-update",
+        asset: "BTCUSDC",
+        ask: `${BTC_ask}`,
+        bid: `${BTC_bid}`,
+      });
+    }
+
+    if (ETH_ask && ETH_bid) {
+      await redisClient.xAdd("stream1:poller", "*", {
+        type: "price-update",
+        asset: "ETHUSDC",
+        ask: `${ETH_ask}`,
+        bid: `${ETH_bid}`,
+      });
+    }
   }, 100);
 });
 

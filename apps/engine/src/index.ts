@@ -1,5 +1,6 @@
 // read from stream1:poller and update pricestore.
 
+import { priceUpdate } from "./handlers/priceUpdate.js";
 import { buyRequest, sellRequest } from "./handlers/tradeRequest.js";
 import { redisClient } from "./redisClient.js";
 import { PRICESTORE } from "./variables.js";
@@ -34,16 +35,10 @@ const cGroup = async () => {
     for (const stream of readGroup) {
       for (const msg of stream.messages) {
         if (msg.message.type === "price-update") {
-          if (msg.message.asset === "SOLUSDC") {
-            PRICESTORE["SOL"].ask = msg.message.ask;
-            PRICESTORE["SOL"].bid = msg.message.bid;
-          }
+          priceUpdate(msg);
         } else if (msg.message.type === "trade-buy") {
-          console.log("insdie buyRequest, msg: ", msg);
           buyRequest(msg);
         } else if (msg.message.type === "trade-sell") {
-          console.log("inside trade-sell");
-          console.log("trade-type: trade-sell");
           sellRequest(msg);
         }
 
