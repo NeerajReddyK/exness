@@ -38,9 +38,10 @@ router.post("/buy", async (req, res) => {
       console.log("started waiting for responseFromEngine");
       const responseFromEngine = await redisSubscriber.waitForMessage(tradeId);
       console.log("responseFromEngine: ", responseFromEngine);
+      const returnResponse = JSON.parse(responseFromEngine as string);
       return res.status(200).json({
         message: "request complete",
-        usd: responseFromEngine,
+        data: returnResponse,
       });
     } catch (error) {
       console.log("error waiting from engine: ", error);
@@ -84,7 +85,6 @@ router.post("/sell", async (req, res) => {
     console.log("xadd", xadd);
 
     // wait for response
-    console.log("entering into responseFromEngine");
     const responseFromEngine = await redisSubscriber.waitForMessage(tradeId);
     console.log("responseFromEngine: ", responseFromEngine);
     const returnResponse = JSON.parse(responseFromEngine as string);

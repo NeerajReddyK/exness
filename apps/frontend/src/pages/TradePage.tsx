@@ -1,7 +1,22 @@
+import { useEffect } from "react";
+import { Buy } from "../components/BuyAndSell";
 import { Chart } from "../components/Chart";
 import { LeftPane } from "../components/LeftPane";
+import useUserStore, { type User } from "../store/store";
+import { useNavigate } from "react-router";
 
 export const TradePage = () => {
+  console.log("useUserStore: ", useUserStore.getState());
+  const navigate = useNavigate();
+  const user = useUserStore.getState();
+  useEffect(() => {
+    const token = user.token;
+    console.log("token from inside useEffect(): ", token);
+    if(!token) {
+      navigate("/login");
+      return;
+    }
+  }, [useUserStore.getState()])
   return (
     <div className="h-screen flex flex-col ">
       <div className="h-16 bg-componentBgColor">navbar</div>
@@ -20,7 +35,9 @@ export const TradePage = () => {
           </div>
         </div>
 
-        <div className="w-56 bg-componentBgColor rounded-l-sm">right pane</div>
+        <div className="w-56 bg-componentBgColor rounded-l-sm">
+          <Buy />
+        </div>
       </div>
       <div className="h-8 bg-componentBgColor mt-1">footer</div>
     </div>

@@ -18,10 +18,11 @@ export const buyRequest = async (msg: tradeRequestTypes) => {
     }
 
     const assetPrice = PRICESTORE[asset].ask;
+    const quantityInt = Number(quantity);
 
-    if (BALANCES[userId].usd >= assetPrice) {
-      BALANCES[userId].usd -= assetPrice;
-      BALANCES[userId].asset[asset] += parseInt(quantity);
+    if (BALANCES[userId].usd >= assetPrice * quantityInt) {
+      BALANCES[userId].usd -= assetPrice * quantityInt;
+      BALANCES[userId].asset[asset] += quantityInt;
     } else {
       const updatedBalance = JSON.stringify(BALANCES[userId]);
       await redisClient.xAdd("stream2:backend", "*", {
@@ -63,8 +64,9 @@ export const sellRequest = async (msg: tradeRequestTypes) => {
     return;
   }
 
+  const quantityInt = Number(quantity);
   const assetPrice = Number(PRICESTORE[asset].ask);
-  if (!(BALANCES[userId].asset[asset] >= parseInt(quantity))) {
+  if (!(BALANCES[userId].asset[asset] >= quantityInt)) {
     const updatedBalance = JSON.stringify(BALANCES[userId]);
     await redisClient.xAdd("stream2:backend", "*", {
       type: "trade-sell-response",
@@ -75,8 +77,8 @@ export const sellRequest = async (msg: tradeRequestTypes) => {
     });
     return;
   }
-  BALANCES[userId].usd += assetPrice;
-  BALANCES[userId].asset[asset] -= parseInt(quantity);
+  BALANCES[userId].usd += assetPrice * quantityInt;
+  BALANCES[userId].asset[asset] -= quantityInt;
   const updatedBalance = JSON.stringify(BALANCES[userId]);
 
   const xread = await redisClient.xAdd("stream2:backend", "*", {

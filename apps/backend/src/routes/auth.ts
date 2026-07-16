@@ -41,6 +41,8 @@ router.post("/signup", async (req, res) => {
       data: {
         userId,
         token,
+        name,
+        email,
       },
     });
   } catch (error) {
@@ -65,6 +67,7 @@ router.post("/login", async (req, res) => {
         .status(400)
         .json({ message: "user not found, try signing in" });
     }
+    const name = user.name;
 
     const hashedPassword = user?.password;
 
@@ -88,6 +91,7 @@ router.post("/login", async (req, res) => {
       data: {
         userId,
         token,
+        name,
       },
     });
   } catch (error) {
