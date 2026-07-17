@@ -22,7 +22,7 @@ const userStore = (set: any) => ({
 const useUserStore = create(
   persist(userStore, {
     name: "user",
-    storage: createJSONStorage(() => sessionStorage),
+    storage: createJSONStorage(() => localStorage),
   }),
 );
 export default useUserStore;

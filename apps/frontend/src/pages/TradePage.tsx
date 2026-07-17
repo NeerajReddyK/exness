@@ -2,16 +2,15 @@ import { useEffect } from "react";
 import { Buy } from "../components/BuyAndSell";
 import { Chart } from "../components/Chart";
 import { LeftPane } from "../components/LeftPane";
-import useUserStore, { type User } from "../store/store";
+import useUserStore from "../store/userStore";
 import { useNavigate } from "react-router";
+import { OpenTrades } from "../components/OpenTrades";
 
 export const TradePage = () => {
-  console.log("useUserStore: ", useUserStore.getState());
   const navigate = useNavigate();
   const user = useUserStore.getState();
   useEffect(() => {
     const token = user.token;
-    console.log("token from inside useEffect(): ", token);
     if(!token) {
       navigate("/login");
       return;
@@ -31,7 +30,7 @@ export const TradePage = () => {
             <Chart />
           </div>
           <div className="h-48 bg-componentBgColor rounded-sm">
-            bottom in middle
+            <OpenTrades />
           </div>
         </div>
 

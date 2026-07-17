@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router";
-import useUserStore from "../store/store";
+import useUserStore from "../store/userStore";
 
 
 const beUrl = import.meta.env.VITE_BE_URL;
@@ -12,11 +12,10 @@ export const SignUp = () => {
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
     const addUser = useUserStore((state) => state.addUser);
+    const user = useUserStore.getState();
 
-    let token: string | null = null;
     useEffect(() => {
-        token = localStorage.getItem("token"); 
-        if(token) {
+        if(user.token) {
             navigate("/home");
         }
     });

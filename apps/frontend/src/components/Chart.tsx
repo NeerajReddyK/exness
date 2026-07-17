@@ -1,14 +1,52 @@
-import { useEffect, useRef } from "react";
-import { CandlestickSeries, createChart } from "lightweight-charts";
+import { useEffect, useRef, useState } from "react";
+import { CandlestickSeries, createChart, type UTCTimestamp } from "lightweight-charts";
+import axios from "axios";
 
+const beUrl = import.meta.env.VITE_BE_URL;
+interface KlineDataType {
+  time: string,
+  open: string,
+  high: string,
+  close: string,
+  low: string
+}
 export const Chart = () => {
   const chartRef = useRef<HTMLDivElement>(null);
+  const [data, setData] = useState<KlineDataType[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const klineData = await axios.get(`${beUrl}/klines/api/v1/klines?`, {
+        params: {
+          symbol: "SOL_USDC",
+          interval: "1m",
+          startTime: Math.floor(Date.now() / 1000) - 3600,
+        }
+      });
+      // klineData.data.data is the array that consists of required klinedata
+      const res = klineData.data.data;
+      console.log("res: ", res);
+      const formattedData = res.map((kline: any) => ({
+        time: Math.floor(new Date(kline.start.replace(" ", "T")+ "Z").getTime() / 1000) as UTCTimestamp,
+        open: Number(kline.open),
+        high: Number(kline.high),
+        close: Number(kline.close),
+        low: Number(kline.low)
+      }));
+      console.log("formattedData: ", formattedData);
+      setData(formattedData);
+    }
+    fetchData();
+  }, []);
+
+
   useEffect(() => {
     const element = chartRef.current;
     if (!element) {
       console.log("useRef not populated yet");
       return;
     }
+
     const chart = createChart(element, {
       layout: { background: { color: "black" }, textColor: "grey" },
       grid: {
@@ -16,64 +54,17 @@ export const Chart = () => {
         horzLines: { color: "#141d22" },
       },
     });
+
     const candleStick = chart.addSeries(CandlestickSeries);
-    candleStick.setData([
-      {
-        time: "2018-12-22",
-        open: 75.16,
-        high: 82.84,
-        low: 36.16,
-        close: 45.72,
-      },
-      { time: "2018-12-23", open: 45.12, high: 53.9, low: 45.12, close: 48.09 },
-      {
-        time: "2018-12-24",
-        open: 60.71,
-        high: 60.71,
-        low: 53.39,
-        close: 59.29,
-      },
-      { time: "2018-12-25", open: 68.26, high: 68.26, low: 59.04, close: 60.5 },
-      {
-        time: "2018-12-26",
-        open: 67.71,
-        high: 105.85,
-        low: 66.67,
-        close: 91.04,
-      },
-      { time: "2018-12-27", open: 91.04, high: 121.4, low: 82.7, close: 111.4 },
-      {
-        time: "2018-12-28",
-        open: 111.51,
-        high: 142.83,
-        low: 103.34,
-        close: 131.25,
-      },
-      {
-        time: "2018-12-29",
-        open: 131.33,
-        high: 151.17,
-        low: 77.68,
-        close: 96.43,
-      },
-      {
-        time: "2018-12-30",
-        open: 106.33,
-        high: 110.2,
-        low: 90.39,
-        close: 98.1,
-      },
-      {
-        time: "2018-12-31",
-        open: 109.87,
-        high: 114.69,
-        low: 85.66,
-        close: 111.26,
-      },
-    ]);
+
+    if(data.length > 0) {
+      candleStick.setData(data);
+    }
+
     chart.timeScale().fitContent();
+
     return () => chart.remove();
-  }, []);
+  }, [data]);
   return (
     <div className="rounded-lg overflow-hidden w-full h-full">
       <div ref={chartRef} className="w-full h-full"></div>

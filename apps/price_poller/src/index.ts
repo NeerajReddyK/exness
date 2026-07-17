@@ -9,7 +9,7 @@ if (!BACKPACK_WS) {
 
 const ws = new WebSocket(`${BACKPACK_WS}`);
 
-ws.on("open", async () => {
+ws.on("open", () => {
   console.log("connected");
 
   const subscribe = {

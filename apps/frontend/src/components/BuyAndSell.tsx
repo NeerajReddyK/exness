@@ -1,18 +1,21 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import axios from "axios";
 import { useNavigate } from "react-router";
+import useUserStore from "../store/userStore";
 
 const beUrl = import.meta.env.VITE_BE_URL;
 export const Buy = () => {
     const [asset, setAsset] = useState<"SOL_USDC" | "BTC_USDC" | "ETH_USDC">("SOL_USDC");
     const [buyQuantity, setBuyQuantity] = useState<number>(0);
     const [sellQuantity, setSellQuantity] = useState<number>(0);
+    const token = useUserStore((state) => state.token);
     const navigate = useNavigate();
-    const token = localStorage.getItem("token");
-    if(!token) {
-        navigate("/login");
-        return;
-    }
+    useEffect(() => {
+        if(!token) {
+            navigate("/login");
+            return;
+        }
+    }, []);
 
     const handleBuySubmit = async () => {
         console.log("inside handleBuySubmit");

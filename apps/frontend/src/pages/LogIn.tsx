@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react"
 import axios from "axios";
 import { useNavigate } from "react-router";
-import useUserStore from "../store/store";
+import useUserStore from "../store/userStore";
 
 const beUrl = import.meta.env.VITE_BE_URL;
 
 export const LogIn = () => {
     const navigate = useNavigate();
+    const user = useUserStore.getState();
     useEffect(() => {
-      const token = localStorage.getItem("token");
+      const token = user.token;
       if(token) {
         navigate("/home");
       }
