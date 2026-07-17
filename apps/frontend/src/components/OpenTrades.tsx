@@ -11,9 +11,7 @@ export const OpenTrades = () => {
             </div>
             <div>
                 {selected === "open" && 
-                    <div>
-                        <ShowOpenTrades />
-                    </div>
+                    <ShowOpenTrades />
                 }
             </div>
         </div>

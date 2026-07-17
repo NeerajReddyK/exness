@@ -8,6 +8,11 @@ export const ShowOpenTrades = () => {
     const ethPrice = useAssetStore((state) => state.ETH_USDC);
     return (
         <div>
+            <div>
+                {openTrades.length === 0 && 
+                    <div className="w-full h-full flex items-center justify-center"> no open trades</div>
+                }
+            </div>
             {openTrades.map((trade: any, id) => (
                 <div key={id} className="flex gap-4">
                     <div>

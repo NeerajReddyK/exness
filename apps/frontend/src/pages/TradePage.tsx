@@ -5,6 +5,7 @@ import { LeftPane } from "../components/LeftPane";
 import useUserStore from "../store/userStore";
 import { useNavigate } from "react-router";
 import { OpenTrades } from "../components/OpenTrades";
+import { NavBar } from "../components/NavBar";
 
 export const TradePage = () => {
   const navigate = useNavigate();
@@ -18,7 +19,9 @@ export const TradePage = () => {
   }, [useUserStore.getState()])
   return (
     <div className="h-screen flex flex-col ">
-      <div className="h-16 bg-componentBgColor">navbar</div>
+      <div className="h-16 bg-componentBgColor">
+        <NavBar />
+      </div>
 
       <div className="flex-1 flex flex-row overflow-hidden gap-1 mt-1">
         <div className="w-64 bg-componentBgColor rounded-r-md">
@@ -38,7 +41,9 @@ export const TradePage = () => {
           <Buy />
         </div>
       </div>
-      <div className="h-8 bg-componentBgColor mt-1">footer</div>
+      <div className="h-8 bg-componentBgColor mt-1 flex items-center justify-center">
+        The backend is built to handle several thousand request per second with latency matching real systems
+      </div>
     </div>
   );
 };
