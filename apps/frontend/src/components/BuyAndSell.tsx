@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import axios from "axios";
 import { useNavigate } from "react-router";
 import useUserStore from "../store/userStore";
+import useTradesStore from "../store/tradesStore";
 
 const beUrl = import.meta.env.VITE_BE_URL;
 export const Buy = () => {
@@ -10,6 +11,7 @@ export const Buy = () => {
     const [sellQuantity, setSellQuantity] = useState<number>(0);
     const token = useUserStore((state) => state.token);
     const navigate = useNavigate();
+    const setOpen = useTradesStore((state) => state.setOpen);
     useEffect(() => {
         if(!token) {
             navigate("/login");
@@ -25,8 +27,17 @@ export const Buy = () => {
             quantity: `${buyQuantity}`
         });
 
+        // should also send to the database. should create a seperate stream for this.
+        const data = response.data.data;
+        const newTrade = {
+            asset: data.requestedAsset,
+            price: data.executedPrice,
+            quantity: data.requestedQuantity,
+            updatedBalance: data.updatedBalance
+        }
+        setOpen(newTrade);
+
         console.log("updatedBalance: ", response.data);
-        // from here state should be updated after adding state management library.
     }
 
     const handleSellSubmit = async () => {

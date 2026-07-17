@@ -26,7 +26,7 @@ export class RedisSubscriber {
       const { messages } = xread[0]!;
       const { message } = messages[0];
 
-      this.callbacks[message.tradeId]!(message.updatedBalance);
+      this.callbacks[message.tradeId]!(message.response);
       delete this.callbacks[message.tradeId];
     }
   };

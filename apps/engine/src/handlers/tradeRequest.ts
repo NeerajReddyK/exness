@@ -35,12 +35,20 @@ export const buyRequest = async (msg: tradeRequestTypes) => {
       return;
     }
     const updatedBalance = JSON.stringify(BALANCES[userId]);
+    const responseToBackend = {
+      type: "buy",
+      requestedAsset: asset,
+      executedPrice: assetPrice,
+      requestedQuantity: quantityInt,
+      updatedBalance,
+    };
+    const response = JSON.stringify(responseToBackend);
     await redisClient.xAdd("stream2:backend", "*", {
       type: "trade-buy-response",
       tradeId,
       userId,
       message: "Success",
-      updatedBalance,
+      response,
     });
   } catch (error) {
     console.log("error in buyRequest: ", error);
@@ -80,13 +88,21 @@ export const sellRequest = async (msg: tradeRequestTypes) => {
   BALANCES[userId].usd += assetPrice * quantityInt;
   BALANCES[userId].asset[asset] -= quantityInt;
   const updatedBalance = JSON.stringify(BALANCES[userId]);
+  const responseToBackend = {
+    type: "sell",
+    requestedAsset: asset,
+    executedPrice: assetPrice,
+    requestedQuantity: quantityInt,
+    updatedBalance,
+  };
+  const response = JSON.stringify(responseToBackend);
 
   const xread = await redisClient.xAdd("stream2:backend", "*", {
     type: "trade-sell-response",
     userId,
     tradeId,
     message: "Success",
-    updatedBalance,
+    response,
   });
   console.log("added to stream2:backend: ", xread);
 
