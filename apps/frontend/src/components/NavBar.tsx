@@ -1,6 +1,3 @@
-
-
-
 export const NavBar = () => {
   return (
     <nav className="flex items-center justify-between h-16 px-6 border-b border-gray-800 ">
@@ -13,9 +10,7 @@ export const NavBar = () => {
         <h2 className="text-2xl font-semibold text-gray-300">MockTrade</h2>
       </div>
 
-      <div className="flex items-center gap-6">
-
-      </div>
+      <div className="flex items-center gap-6"></div>
     </nav>
   );
 };

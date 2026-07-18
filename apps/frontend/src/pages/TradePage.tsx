@@ -12,11 +12,11 @@ export const TradePage = () => {
   const user = useUserStore.getState();
   useEffect(() => {
     const token = user.token;
-    if(!token) {
+    if (!token) {
       navigate("/login");
       return;
     }
-  }, [useUserStore.getState()])
+  }, [useUserStore.getState()]);
   return (
     <div className="h-screen flex flex-col ">
       <div className="h-16 bg-componentBgColor">
@@ -42,7 +42,8 @@ export const TradePage = () => {
         </div>
       </div>
       <div className="h-8 bg-componentBgColor mt-1 flex items-center justify-center">
-        The backend is built to handle several thousand request per second with latency matching real systems
+        The backend is built to handle several thousand request per second with
+        latency matching real systems
       </div>
     </div>
   );

@@ -1,14 +1,18 @@
 import { useEffect, useRef, useState } from "react";
-import { CandlestickSeries, createChart, type UTCTimestamp } from "lightweight-charts";
+import {
+  CandlestickSeries,
+  createChart,
+  type UTCTimestamp,
+} from "lightweight-charts";
 import axios from "axios";
 
 const beUrl = import.meta.env.VITE_BE_URL;
 interface KlineDataType {
-  time: string,
-  open: string,
-  high: string,
-  close: string,
-  low: string
+  time: string;
+  open: string;
+  high: string;
+  close: string;
+  low: string;
 }
 export const Chart = () => {
   const chartRef = useRef<HTMLDivElement>(null);
@@ -21,24 +25,25 @@ export const Chart = () => {
           symbol: "SOL_USDC",
           interval: "1m",
           startTime: Math.floor(Date.now() / 1000) - 3600,
-        }
+        },
       });
       // klineData.data.data is the array that consists of required klinedata
       const res = klineData.data.data;
       console.log("res: ", res);
       const formattedData = res.map((kline: any) => ({
-        time: Math.floor(new Date(kline.start.replace(" ", "T")+ "Z").getTime() / 1000) as UTCTimestamp,
+        time: Math.floor(
+          new Date(kline.start.replace(" ", "T") + "Z").getTime() / 1000,
+        ) as UTCTimestamp,
         open: Number(kline.open),
         high: Number(kline.high),
         close: Number(kline.close),
-        low: Number(kline.low)
+        low: Number(kline.low),
       }));
       console.log("formattedData: ", formattedData);
       setData(formattedData);
-    }
+    };
     fetchData();
   }, []);
-
 
   useEffect(() => {
     const element = chartRef.current;
@@ -57,7 +62,7 @@ export const Chart = () => {
 
     const candleStick = chart.addSeries(CandlestickSeries);
 
-    if(data.length > 0) {
+    if (data.length > 0) {
       candleStick.setData(data);
     }
 
