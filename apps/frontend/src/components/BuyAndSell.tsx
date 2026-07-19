@@ -3,12 +3,11 @@ import axios from "axios";
 import { useNavigate } from "react-router";
 import useUserStore from "../store/userStore";
 import useTradesStore from "../store/tradesStore";
+import useAssetStore from "../store/assetStore";
 
 const beUrl = import.meta.env.VITE_BE_URL;
 export const Buy = () => {
-  const [asset, setAsset] = useState<"SOL_USDC" | "BTC_USDC" | "ETH_USDC">(
-    "SOL_USDC",
-  );
+  const asset = useAssetStore((state) => state.selectedAsset);
   const [buyQuantity, setBuyQuantity] = useState<number>(0);
   const [sellQuantity, setSellQuantity] = useState<number>(0);
   const token = useUserStore((state) => state.token);
@@ -52,55 +51,54 @@ export const Buy = () => {
   };
 
   return (
-    <div className="flex items-center justify-center flex-col m-2 gap-4">
+    <div className="grid grid-rows-3 m-2 mt-5 gap-10">
       <div>
-        <h3 className="flex items-center justify-center text-2xl">Buy</h3>
-        <div className="flex flex-col gap-3">
-          {/* SOL is hardcoded. 
-                     it should change based on the chart displayed. 
-                     should change when state management library is added. */}
-          <label htmlFor="quantity" className="text-xl">
-            SOLUSDC
+        <h3 className="flex items-center justify-center text-2xl mb-2">Buy</h3>
+        <div className="flex flex-col gap-1">
+          <label htmlFor="buy-quantity" className="text-xl">
+            {asset}
           </label>
-          <input
-            type="number"
-            placeholder="quantity"
-            id="quantity"
-            className="border"
-            onChange={(e) => setBuyQuantity(Number(e.target.value))}
-          />
+          <div className="flex items-center justify-between">
+            quantity
+            <input
+              type="decimal"
+              id="buy-quantity"
+              className="max-w-16 text-right pr-2 py-1 border rounded-sm focus:outline-none"
+              onChange={(e) => setBuyQuantity(Number(e.target.value))}
+            />
+          </div>
         </div>
         <button
           onClick={handleBuySubmit}
-          className="mt-2 bg-blue-500 py-2 rounded-lg w-full cursor-pointer"
+          className="mt-2 bg-teal-600 py-2 rounded-lg w-full cursor-pointer font-semibold"
         >
           Submit
         </button>
       </div>
       <div>
-        <h3 className="flex items-center justify-center text-2xl">Sell</h3>
-        <div className="flex flex-col gap-3">
-          {/* SOL is hardcoded. 
-                     it should change based on the chart displayed. 
-                     should change when state management library is added. */}
-          <label htmlFor="quantity" className="text-xl">
-            SOLUSDC
+        <h3 className="flex items-center justify-center text-2xl mb-2">Sell</h3>
+        <div className="flex flex-col gap-1">
+          <label htmlFor="sell-quantity" className="text-xl">
+            {asset}
           </label>
-          <input
-            type="number"
-            placeholder="quantity"
-            id="quantity"
-            className="border"
-            onChange={(e) => setSellQuantity(Number(e.target.value))}
-          />
+          <div className="flex items-center justify-between">
+            quantity
+            <input
+              type="decimal"
+              id="sell-quantity"
+              className="max-w-16 text-right pr-2 py-1 border rounded-sm focus:outline-none"
+              onChange={(e) => setSellQuantity(Number(e.target.value))}
+            />
+          </div>
         </div>
         <button
           onClick={handleSellSubmit}
-          className="mt-2 bg-blue-500 py-2 rounded-lg w-full cursor-pointer"
+          className="mt-2 bg-teal-600 py-2 rounded-lg w-full cursor-pointer font-semibold"
         >
           Submit
         </button>
       </div>
+      <div>third part</div>
     </div>
   );
 };

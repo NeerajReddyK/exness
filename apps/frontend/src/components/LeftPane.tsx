@@ -6,6 +6,7 @@ import axios from "axios";
 const backpackWs = import.meta.env.VITE_BACKPACK_WS;
 const beUrl = import.meta.env.VITE_BE_URL;
 export const LeftPane = () => {
+  const selectedAsset = useAssetStore((state) => state.selectedAsset);
   const updatePrice = useAssetStore((state) => state.udpatePrice);
   const setSelectedAsset = useAssetStore((state) => state.setSelectedAsset);
   const subscribe = {
@@ -59,6 +60,8 @@ export const LeftPane = () => {
       }
     };
 
+    websocket.onclose = () => console.log("websocket closed");
+
     // clean-up
     return () => websocket.close();
   }, []);
@@ -77,21 +80,45 @@ export const LeftPane = () => {
             onClick={() => handleClick("SOL_USDC")}
             className="cursor-pointer flex items-center justify-between w-full"
           >
-            SOL_USDC
+            <p
+              className={
+                selectedAsset === "SOL_USDC"
+                  ? "bg-teal-500 p-2 rounded-sm text-white font-semibold"
+                  : ""
+              }
+            >
+              SOL_USDC
+            </p>
             <AssetPrice asset="SOL_USDC" />
           </div>
           <div
             onClick={() => handleClick("BTC_USDC")}
             className="cursor-pointer flex items-center justify-between w-full"
           >
-            BTC_USDC
+            <p
+              className={
+                selectedAsset === "BTC_USDC"
+                  ? "bg-teal-500 p-2 rounded-sm text-white font-semibold"
+                  : ""
+              }
+            >
+              BTC_USDC
+            </p>
             <AssetPrice asset="BTC_USDC" />
           </div>
           <div
             onClick={() => handleClick("ETH_USDC")}
             className="cursor-pointer flex items-center justify-between w-full"
           >
-            ETH_USDC
+            <p
+              className={
+                selectedAsset === "ETH_USDC"
+                  ? "bg-teal-500 p-2 rounded-sm text-white font-semibold"
+                  : ""
+              }
+            >
+              ETH_USDC
+            </p>
             <AssetPrice asset="ETH_USDC" />
           </div>
         </div>

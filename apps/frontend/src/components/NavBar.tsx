@@ -7,7 +7,12 @@ export const NavBar = () => {
           alt="MockTrade Logo"
           className="h-10 w-auto object-contain"
         />
-        <h2 className="text-2xl font-semibold text-gray-300">MockTrade</h2>
+        <h2 className="text-2xl font-semibold text-gray-100">
+          <span className="text-indigo-500">Mock</span>
+          <span className="bg-teal-500 p-1 rounded-sm text-white text-bold">
+            Trade
+          </span>
+        </h2>
       </div>
 
       <div className="flex items-center gap-6"></div>
