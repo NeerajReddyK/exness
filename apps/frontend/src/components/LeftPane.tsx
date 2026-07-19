@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import useAssetStore, { type assetType } from "../store/assetStore";
+import { AssetPrice } from "./AssetPrice";
 
 const backpackWs = import.meta.env.VITE_BACKPACK_WS;
 export const LeftPane = () => {
@@ -43,31 +44,29 @@ export const LeftPane = () => {
   };
   return (
     <div className="m-2">
-      <div className="h-8">INSTRUMENTS</div>
+      <h3 className="h-8 text-xl">ASSETS SUPPORTED</h3>
       <div className="headerandassets">
-        <div className="flex">
-          <span className="flex-2">Symbol</span>
-          <span className="flex-1">bid</span>
-          <span className="flex-1">ask</span>
-        </div>
         <div className="flex flex-col items-start justify-center gap-4">
           <div
             onClick={() => handleClick("SOL_USDC")}
-            className="cursor-pointer"
+            className="cursor-pointer flex items-center justify-between w-full"
           >
-            SOL_USDC: {useAssetStore((state) => state.SOL_USDC)}
+            SOL_USDC
+            <AssetPrice asset="SOL_USDC" />
           </div>
           <div
             onClick={() => handleClick("BTC_USDC")}
-            className="cursor-pointer"
+            className="cursor-pointer flex items-center justify-between w-full"
           >
-            BTC_USDC: {useAssetStore((state) => state.BTC_USDC)}
+            BTC_USDC
+            <AssetPrice asset="BTC_USDC" />
           </div>
           <div
             onClick={() => handleClick("ETH_USDC")}
-            className="cursor-pointer"
+            className="cursor-pointer flex items-center justify-between w-full"
           >
-            ETH_USDC: {useAssetStore((state) => state.ETH_USDC)}
+            ETH_USDC
+            <AssetPrice asset="ETH_USDC" />
           </div>
         </div>
       </div>
