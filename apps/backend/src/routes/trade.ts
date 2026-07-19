@@ -37,8 +37,17 @@ router.post("/buy", async (req, res) => {
     try {
       console.log("started waiting for responseFromEngine");
       const responseFromEngine = await redisSubscriber.waitForMessage(tradeId);
-      console.log("responseFromEngine: ", responseFromEngine);
       const returnResponse = JSON.parse(responseFromEngine as string);
+      const id = await redisClient.xAdd("stream3:trades", "*", {
+        tradeId: tradeId,
+        userId: userId,
+        status: "open",
+        asset: asset,
+        type: "buy",
+        issuePrice: String(returnResponse.executedPrice),
+        quantity: String(quantity),
+      });
+      console.log("added to stream3:trades with id: ", id);
       return res.status(200).json({
         message: "request complete",
         data: returnResponse,
@@ -88,6 +97,15 @@ router.post("/sell", async (req, res) => {
     const responseFromEngine = await redisSubscriber.waitForMessage(tradeId);
     console.log("responseFromEngine: ", responseFromEngine);
     const returnResponse = JSON.parse(responseFromEngine as string);
+    await redisClient.xAdd("stream3:trades", "*", {
+      tradeId,
+      userId,
+      status: "open",
+      asset,
+      type: "sell",
+      issuePrice: String(returnResponse.executedPrice),
+      quantity: String(quantity),
+    });
     return res.status(200).json({ message: "success", data: returnResponse });
   } catch (error) {
     console.error("error: ", error);

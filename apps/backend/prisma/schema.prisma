@@ -13,8 +13,38 @@ datasource db {
 }
 
 model User {
-  userId   String @id @default(uuid())
-  email    String @unique
+  userId   String   @id @default(uuid())
+  email    String   @unique
   password String
   name     String
+  trades   Trades[]
+}
+
+enum StatusEnum {
+  open
+  closed
+}
+
+enum AssetEnum {
+  SOL_USDC
+  BTC_USDC
+  ETH_USDC
+}
+
+enum TypeEnum {
+  buy
+  sell
+}
+
+model Trades {
+  tradeId    String     @unique
+  userId     String
+  status     StatusEnum
+  asset      AssetEnum
+  type       TypeEnum
+  issuePrice Decimal
+  quantity   Decimal
+  salePrice  Decimal?
+  isActive   Boolean?   @default(true)
+  user       User       @relation(fields: [userId], references: [userId])
 }
