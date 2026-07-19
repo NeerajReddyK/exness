@@ -48,34 +48,37 @@ ws.on("open", () => {
   });
 
   setInterval(async () => {
-    if (!SOL_ask || !SOL_bid) {
+    if (
+      SOL_ask === null ||
+      SOL_bid === null ||
+      BTC_ask === null ||
+      BTC_bid === null ||
+      ETH_ask === null ||
+      ETH_bid === null
+    ) {
       return;
     }
-    if (SOL_ask && SOL_bid) {
-      await redisClient.xAdd("stream1:poller", "*", {
+    try {
+      const id = await redisClient.xAdd("stream1:poller", "*", {
         type: "price-update",
-        asset: "SOL_USDC",
-        ask: `${SOL_ask}`,
-        bid: `${SOL_bid}`,
+        SOL_ask: SOL_ask.toString(),
+        SOL_bid: SOL_bid.toString(),
+        BTC_ask: BTC_ask.toString(),
+        BTC_bid: BTC_bid.toString(),
+        ETH_ask: ETH_ask.toString(),
+        ETH_bid: ETH_bid.toString(),
       });
-    }
-
-    if (BTC_ask && BTC_bid) {
-      await redisClient.xAdd("stream1:poller", "*", {
-        type: "price-update",
-        asset: "BTC_USDC",
-        ask: `${BTC_ask}`,
-        bid: `${BTC_bid}`,
+      await redisClient.hSet("update_prices", {
+        streamId: id,
+        SOL_ask,
+        SOL_bid,
+        BTC_ask,
+        BTC_bid,
+        ETH_ask,
+        ETH_bid,
       });
-    }
-
-    if (ETH_ask && ETH_bid) {
-      await redisClient.xAdd("stream1:poller", "*", {
-        type: "price-update",
-        asset: "ETH_USDC",
-        ask: `${ETH_ask}`,
-        bid: `${ETH_bid}`,
-      });
+    } catch (error) {
+      console.error("error while updating redis: ", error);
     }
   }, 100);
 });

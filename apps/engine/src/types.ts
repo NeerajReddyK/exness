@@ -12,9 +12,12 @@ export interface tradeRequestTypes {
 
 interface priceUpdate {
   type: "price-update";
-  asset: "SOL_USDC" | "BTC_USDC" | "ETH_USDC";
-  bid: string;
-  ask: string;
+  SOL_ask: string;
+  SOL_bid: string;
+  BTC_ask: string;
+  BTC_bid: string;
+  ETH_ask: string;
+  ETH_bid: string;
 }
 export interface priceUpdateTypes {
   id: string;
