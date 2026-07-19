@@ -9,13 +9,21 @@ export const OpenTrades = () => {
       <div className="mt-1 ml-1 flex gap-3 text-gray-400">
         <button
           onClick={() => setSelected("open")}
-          className={`cursor-pointer ${selected === "open" && ` border-b-3`}`}
+          className={
+            selected === "open"
+              ? "cursor-pointer border-solid border-b-3"
+              : "cursor-pointer"
+          }
         >
           Open
         </button>
         <button
           onClick={() => setSelected("closed")}
-          className={`cursor-pointer ${selected === "closed" && ` border-b-3`}`}
+          className={
+            selected === "closed"
+              ? "cursor-pointer border-solid border-b-3"
+              : "cursor-pointer"
+          }
         >
           Closed
         </button>

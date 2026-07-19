@@ -3,6 +3,7 @@ import cors from "cors";
 import authRouter from "./routes/auth.js";
 import tradeRouter from "./routes/trade.js";
 import KlineRouter from "./routes/klines.js";
+import priceRouter from "./routes/prices.js";
 
 const app = express();
 app.use(express.json());
@@ -15,6 +16,7 @@ app.use(
 app.use("/auth", authRouter);
 app.use("/trade", tradeRouter);
 app.use("/klines", KlineRouter);
+app.use("/prices", priceRouter);
 
 app.listen(3000, () => {
   console.log("listening on port 3000");

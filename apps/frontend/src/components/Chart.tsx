@@ -29,7 +29,6 @@ export const Chart = () => {
       });
       // klineData.data.data is the array that consists of required klinedata
       const res = klineData.data.data;
-      console.log("res: ", res);
       const formattedData = res.map((kline: any) => ({
         time: Math.floor(
           new Date(kline.start.replace(" ", "T") + "Z").getTime() / 1000,
@@ -39,7 +38,6 @@ export const Chart = () => {
         close: Number(kline.close),
         low: Number(kline.low),
       }));
-      console.log("formattedData: ", formattedData);
       setData(formattedData);
     };
     fetchData();
