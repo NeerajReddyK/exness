@@ -16,3 +16,7 @@ export const tradeSchema = z.object({
   asset: z.enum(["SOL_USDC", "BTC_USDC", "ETH_USDC"]),
   quantity: z.string(),
 });
+
+export const getTrades = z.object({
+  token: z.string(),
+});

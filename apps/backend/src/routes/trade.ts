@@ -1,9 +1,10 @@
 import express, { Router } from "express";
 import jwt, { type JwtPayload } from "jsonwebtoken";
-import { tradeSchema } from "../types.js";
+import { getTrades, tradeSchema } from "../types.js";
 import { v4 as uuidv4 } from "uuid";
 import { redisClient } from "../lib/redisClient.js";
 import { RedisSubscriber } from "../lib/redisSubscriber.js";
+import { prisma } from "../lib/prisma.js";
 
 const router: Router = express.Router();
 
@@ -114,6 +115,48 @@ router.post("/sell", async (req, res) => {
       reason: "Internal server error",
       errorLog: error,
     });
+  }
+});
+
+router.get("/trades", async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+      return res.status(400).json({ message: "Fail", data: "Unauthorized" });
+    }
+    const token = authHeader?.split(" ")[1];
+    if (!token) {
+      return res
+        .status(400)
+        .json({ message: "Fail", error: "Undefined token" });
+    }
+
+    const jwt_check = jwt.verify(
+      String(token),
+      process.env.JWT_SECRET!,
+    ) as JwtPayload;
+    if (!jwt_check) {
+      return res
+        .status(401)
+        .json({ message: "Fail", reason: "invalid token", errorLog: null });
+    }
+    const userId = jwt_check.userId;
+    const response = await prisma.trades.findMany({
+      where: {
+        userId,
+      },
+    });
+    if (!response) {
+      return res
+        .status(500)
+        .json({ message: "Fail", error: "Undefined db response" });
+    }
+    return res.status(200).json({ message: "Success", data: response });
+  } catch (error) {
+    console.error("error in /trades: ", error);
+    return res
+      .status(500)
+      .json({ message: "Fail", data: "Internal server error" });
   }
 });
 

@@ -3,7 +3,6 @@
 import { priceUpdate } from "./handlers/priceUpdate.js";
 import { buyRequest, sellRequest } from "./handlers/tradeRequest.js";
 import { redisClient } from "./redisClient.js";
-import { PRICESTORE } from "./variables.js";
 
 const cGroup = async () => {
   console.log("cGroup started");
@@ -45,7 +44,6 @@ const cGroup = async () => {
         await redisClient.xAck("stream1:poller", "stream1:cgroup", msg.id);
       }
     }
-    console.log("pricestore: ", PRICESTORE);
   }
 };
 
