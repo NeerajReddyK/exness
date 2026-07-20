@@ -1,14 +1,16 @@
+import { useEffect } from "react";
 import useAssetStore from "../store/assetStore";
 import useTradesStore from "../store/tradesStore";
 
 export const ShowOpenTrades = () => {
   const openTrades = useTradesStore((state) => state.openTrades);
-  //   const solAsk = useAssetStore((state) => state.SOL_USDC.ask);
   const solBid = useAssetStore((state) => state.SOL_USDC.bid);
-  //   const btcAsk = useAssetStore((state) => state.BTC_USDC.ask);
   const btcBid = useAssetStore((state) => state.BTC_USDC.bid);
-  //   const ethAsk = useAssetStore((state) => state.ETH_USDC.ask);
   const ethBid = useAssetStore((state) => state.ETH_USDC.bid);
+  const fetchOpenTrades = useTradesStore((state) => state.fetchData);
+  useEffect(() => {
+    fetchOpenTrades();
+  }, []);
   return (
     <div>
       <div>

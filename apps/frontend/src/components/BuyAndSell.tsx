@@ -5,7 +5,7 @@ import useUserStore from "../store/userStore";
 import useTradesStore from "../store/tradesStore";
 import useAssetStore from "../store/assetStore";
 
-const beUrl = import.meta.env.VITE_BE_URL;
+export const beUrl = import.meta.env.VITE_BE_URL;
 export const Buy = () => {
   const asset = useAssetStore((state) => state.selectedAsset);
   const [buyQuantity, setBuyQuantity] = useState<number>(0);
@@ -27,9 +27,11 @@ export const Buy = () => {
       asset,
       quantity: `${buyQuantity}`,
     });
+    console.log("after axios.post in handlebuysubmit: ", response.data);
 
     // should also send to the database. should create a seperate stream for this.
     const data = response.data.data;
+    console.log("data from handleBuySubmit: ", data);
     const newTrade = {
       asset: data.requestedAsset,
       price: data.executedPrice,
