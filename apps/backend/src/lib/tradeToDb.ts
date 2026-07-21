@@ -15,7 +15,22 @@ const tradeToDb = async () => {
     if (!xread) continue;
 
     const message = xread[0]?.messages[0].message;
-    const addToDb = await prisma.trades.create({
+    const currentBalance = await prisma.user.findFirst({
+      where: {
+        userId: message.userId,
+      },
+    });
+    console.log("currentBalance: ", currentBalance?.balance);
+    const update = await prisma.user.update({
+      data: {
+        balance: message.updatedBalance,
+      },
+      where: {
+        userId: message.userId,
+      },
+    });
+    console.log("updatedBalance: ", update.balance);
+    await prisma.trades.create({
       data: {
         tradeId: message.tradeId,
         userId: message.userId,

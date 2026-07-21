@@ -17,6 +17,7 @@ model User {
   email    String   @unique
   password String
   name     String
+  balance  String   @default("{\"usd\":5000,\"asset\":{\"SOL_USDC\":0,\"BTC_USDC\":0,\"ETH_USDC\":0}}")
   trades   Trades[]
 }
 
@@ -37,7 +38,7 @@ enum TypeEnum {
 }
 
 model Trades {
-  tradeId    String     @unique
+  tradeId    String     @id @unique
   userId     String
   status     StatusEnum
   asset      AssetEnum

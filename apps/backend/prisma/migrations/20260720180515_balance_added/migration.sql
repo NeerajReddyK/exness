@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN     "balance" TEXT NOT NULL DEFAULT 'USD: 5000, SOL_USDC: 0, BTC_USDC: 0, ETH_USDC; 0';

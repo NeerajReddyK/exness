@@ -47,6 +47,7 @@ router.post("/buy", async (req, res) => {
         type: "buy",
         issuePrice: String(returnResponse.executedPrice),
         quantity: String(quantity),
+        updatedBalance: returnResponse.updatedBalance,
       });
       console.log("added to stream3:trades with id: ", id);
       return res.status(200).json({
@@ -106,6 +107,7 @@ router.post("/sell", async (req, res) => {
       type: "sell",
       issuePrice: String(returnResponse.executedPrice),
       quantity: String(quantity),
+      updatedBalance: returnResponse.updatedBalance,
     });
     return res.status(200).json({ message: "success", data: returnResponse });
   } catch (error) {
