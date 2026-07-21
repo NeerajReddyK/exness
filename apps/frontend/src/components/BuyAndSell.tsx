@@ -13,6 +13,7 @@ export const Buy = () => {
   const token = useUserStore((state) => state.token);
   const navigate = useNavigate();
   const setOpen = useTradesStore((state) => state.setOpen);
+  const setBalance = useUserStore((state) => state.setBalance);
   useEffect(() => {
     if (!token) {
       navigate("/login");
@@ -39,8 +40,7 @@ export const Buy = () => {
       updatedBalance: data.updatedBalance,
     };
     setOpen(newTrade);
-
-    console.log("updatedBalance: ", response.data);
+    setBalance(data.updatedBalance);
   };
 
   const handleSellSubmit = async () => {

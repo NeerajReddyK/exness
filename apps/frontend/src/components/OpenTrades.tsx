@@ -28,7 +28,7 @@ export const OpenTrades = () => {
           Closed
         </button>
       </div>
-      <div>
+      <div className="h-40 overflow-y-auto scrollbar-none">
         {selected === "open" && <ShowOpenTrades />}
         {selected === "closed" && <ShowClosedTrades />}
       </div>

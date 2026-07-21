@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import useAssetStore, { type assetType } from "../store/assetStore";
 import { AssetPrice } from "./AssetPrice";
 import axios from "axios";
+import { Balance } from "./Balance";
 
 const backpackWs = import.meta.env.VITE_BACKPACK_WS;
 const beUrl = import.meta.env.VITE_BE_URL;
@@ -72,9 +73,9 @@ export const LeftPane = () => {
     setSelectedAsset(asset);
   };
   return (
-    <div className="m-2">
-      <h3 className="h-8 text-xl">ASSETS SUPPORTED</h3>
-      <div className="headerandassets">
+    <div className="m-2 grid grid-rows-6 h-full">
+      <div className="row-span-4">
+        <h3 className="h-8 text-xl">ASSETS SUPPORTED</h3>
         <div className="flex flex-col items-start justify-center gap-4">
           <div
             onClick={() => handleClick("SOL_USDC")}
@@ -122,6 +123,9 @@ export const LeftPane = () => {
             <AssetPrice asset="ETH_USDC" />
           </div>
         </div>
+      </div>
+      <div className="row-span-2 mr-2 cursor-auto">
+        <Balance />
       </div>
     </div>
   );

@@ -5,16 +5,24 @@ export interface User {
   name: string;
   email: string;
   token: string;
+  balance: string;
 }
 const userStore = (set: any) => ({
   name: null,
   email: null,
   token: null,
+  balance: null,
   addUser: (user: User) => {
     set(() => ({
       name: user.name,
       email: user.email,
       token: user.token,
+      balance: user.balance,
+    }));
+  },
+  setBalance: (balance: string) => {
+    set(() => ({
+      balance,
     }));
   },
 });

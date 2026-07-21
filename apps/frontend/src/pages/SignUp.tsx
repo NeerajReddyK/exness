@@ -27,9 +27,9 @@ export const SignUp = () => {
         password,
       });
 
-      const { token } = await user.data.data;
+      const { token, balance } = await user.data.data;
       console.log("useUserStore before adding: ", useUserStore.getState());
-      addUser({ name, email, token });
+      addUser({ name, email, token, balance });
       console.log("useUserStore after adding: ", useUserStore.getState());
       navigate("/home");
     } catch (error) {
