@@ -5,6 +5,7 @@ import {
   type UTCTimestamp,
 } from "lightweight-charts";
 import axios from "axios";
+import useAssetStore from "../store/assetStore";
 
 const beUrl = import.meta.env.VITE_BE_URL;
 interface KlineDataType {
@@ -17,14 +18,19 @@ interface KlineDataType {
 export const Chart = () => {
   const chartRef = useRef<HTMLDivElement>(null);
   const [data, setData] = useState<KlineDataType[]>([]);
+  const selectedAsset = useAssetStore((state) => state.selectedAsset);
+  const [startTime, setStartTime] = useState(
+    Math.floor(Date.now() / 1000) - 18000,
+  );
+  const [endTime, setEndTime] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       const klineData = await axios.get(`${beUrl}/klines/api/v1/klines?`, {
         params: {
-          symbol: "SOL_USDC",
-          interval: "1m",
-          startTime: Math.floor(Date.now() / 1000) - 3600,
+          symbol: `${selectedAsset}`,
+          interval: "5m",
+          startTime: startTime,
         },
       });
       // klineData.data.data is the array that consists of required klinedata
@@ -41,7 +47,11 @@ export const Chart = () => {
       setData(formattedData);
     };
     fetchData();
-  }, []);
+  }, [selectedAsset]);
+
+  // useEffect(() => {
+  //   console.log("data: ", data);
+  // }, [data]);
 
   useEffect(() => {
     const element = chartRef.current;
@@ -64,10 +74,20 @@ export const Chart = () => {
       candleStick.setData(data);
     }
 
-    chart.timeScale().fitContent();
+    chart.timeScale().subscribeVisibleLogicalRangeChange((range) => {
+      if (!range) return;
+      const info = candleStick.barsInLogicalRange(range);
 
-    return () => chart.remove();
+      console.log("info: ", info);
+      if (info && info.barsBefore < 20) {
+        // fetch older records.
+        // update new records at start or end. figure out
+      }
+    });
+
+    chart.timeScale().fitContent();
   }, [data]);
+
   return (
     <div className="rounded-lg overflow-hidden w-full h-full">
       <div ref={chartRef} className="w-full h-full"></div>

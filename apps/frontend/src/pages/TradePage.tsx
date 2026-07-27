@@ -6,6 +6,7 @@ import useUserStore from "../store/userStore";
 import { useNavigate } from "react-router";
 import { OpenTrades } from "../components/OpenTrades";
 import { NavBar } from "../components/NavBar";
+import { Chart2 } from "../components/Chart2";
 
 export const TradePage = () => {
   const navigate = useNavigate();
@@ -30,7 +31,8 @@ export const TradePage = () => {
 
         <div className="flex-1 flex flex-col gap-1 rounded-md ">
           <div className="flex-1 bg-componentBgColor rounded-lg">
-            <Chart />
+            {/* <Chart /> */}
+            <Chart2 />
           </div>
           <div className="h-48 bg-componentBgColor rounded-sm">
             <OpenTrades />
